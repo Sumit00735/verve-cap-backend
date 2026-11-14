@@ -1,0 +1,10 @@
+---
+description: Verve Cap backend rules
+alwaysApply: true
+---
+
+- Two-repo layout: frontend is in github.com/Sumit00735/verve-cap. No monorepo.
+- Follow program docs in the `pr` repo (MASTER_GUIDE, BACKEND_EXECUTION, CONTRACTS).
+- TypeScript strict, NestJS Fastify, Prisma, feature modules under `src/features/`.
+- No `console.log`, no TODOs in commits, no secrets in git.
+- Update `openapi/v1.yaml` when API shapes change.

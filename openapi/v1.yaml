@@ -1,0 +1,30 @@
+openapi: 3.1.0
+info:
+  title: Verve Cap API
+  version: 0.0.1
+  description: Phase 0 foundation — health and readiness only until feature branches land.
+paths:
+  /health:
+    get:
+      summary: Liveness
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    const: ok
+  /ready:
+    get:
+      summary: Readiness (Postgres + Redis)
+      responses:
+        '200':
+          description: Dependencies healthy
+        '503':
+          description: One or more dependencies unavailable
+components: {}
