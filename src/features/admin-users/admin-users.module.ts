@@ -8,5 +8,6 @@ import { AdminUsersService } from './admin-users.service';
   imports: [ActivityLogModule, NotificationsModule],
   controllers: [AdminUsersController],
   providers: [AdminUsersService],
+  exports: [AdminUsersService],
 })
 export class AdminUsersModule {}

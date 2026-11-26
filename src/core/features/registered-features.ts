@@ -32,4 +32,9 @@ export const registeredFeatures = [
     dependsOn: ['auth-sessions'],
     permissions: ['admin.emails.read'],
   }),
+  defineFeature({
+    key: 'roles-access',
+    dependsOn: ['admin-users'],
+    permissions: ['admin.users.write'],
+  }),
 ];

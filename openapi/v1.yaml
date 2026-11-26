@@ -53,6 +53,9 @@ paths:
   /api/v1/admin/users/{id}/status:
     patch:
       summary: Update user status
+  /api/v1/admin/users/{id}/role:
+    patch:
+      summary: Set user role
   /api/v1/admin/dashboard:
     get:
       summary: Admin counts

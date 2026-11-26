@@ -118,4 +118,63 @@ export class AdminUsersService {
 
     return { id: updated.id, status: updated.status };
   }
+
+  async updateRole(
+    actor: SessionUser,
+    userId: string,
+    role: UserRole,
+  ): Promise<{ id: string; role: UserRole }> {
+    if (actor.id === userId) {
+      throw new AppException(
+        'bad_request',
+        'You cannot change your own role',
+        400,
+      );
+    }
+
+    const target = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!target) {
+      throw new AppException('not_found', 'Not found', 404);
+    }
+
+    if (target.status !== UserStatus.ACTIVE) {
+      throw new AppException(
+        'bad_request',
+        'Only active accounts can have roles assigned',
+        400,
+      );
+    }
+
+    if (target.role === role) {
+      return { id: target.id, role: target.role };
+    }
+
+    if (target.role === UserRole.ADMIN && role === UserRole.USER) {
+      const adminCount = await this.prisma.user.count({
+        where: { role: UserRole.ADMIN, status: UserStatus.ACTIVE },
+      });
+      if (adminCount <= 1) {
+        throw new AppException(
+          'bad_request',
+          'At least one admin account must remain',
+          400,
+        );
+      }
+    }
+
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { role },
+    });
+
+    await this.activity.record({
+      actorId: actor.id,
+      action: 'user.role_changed',
+      targetType: 'user',
+      targetId: userId,
+      detail: `${target.role} -> ${role}`,
+    });
+
+    return { id: updated.id, role: updated.role };
+  }
 }

@@ -20,6 +20,7 @@ describe('FeatureRegistryService', () => {
       'admin-dashboard',
       'activity-log',
       'notifications',
+      'roles-access',
     ]);
   });
 
