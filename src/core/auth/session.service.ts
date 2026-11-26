@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { User, UserRole, UserStatus } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { SignJWT, jwtVerify } from 'jose';
+import jwt from 'jsonwebtoken';
 import { AppConfigService } from '../config/config.service';
 import { AppException } from '../errors/app.exception';
 import { PrismaService } from '../prisma/prisma.service';
-import type { AccessClaims, SessionUser } from './auth.types';
+import type { SessionUser } from './auth.types';
 import { hashToken, randomToken } from './token-hash';
 
 const ACCESS_COOKIE = 'vc_at';
@@ -13,19 +13,19 @@ const REFRESH_COOKIE = 'vc_rt';
 
 @Injectable()
 export class SessionService {
-  private readonly secret: Uint8Array;
+  private readonly secret: string;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: AppConfigService,
   ) {
-    this.secret = new TextEncoder().encode(this.config.env.SESSION_SECRET);
+    this.secret = this.config.env.SESSION_SECRET;
   }
 
   async startSession(user: User, reply: FastifyReply): Promise<void> {
     const familyId = randomToken(16);
     const refreshToken = await this.createRefreshToken(user.id, familyId);
-    const accessToken = await this.signAccessToken(user, familyId);
+    const accessToken = this.signAccessToken(user, familyId);
     this.setCookies(reply, accessToken, refreshToken);
   }
 
@@ -60,11 +60,14 @@ export class SessionService {
       stored.userId,
       stored.familyId,
     );
-    const accessToken = await this.signAccessToken(stored.user, stored.familyId);
+    const accessToken = this.signAccessToken(stored.user, stored.familyId);
     this.setCookies(reply, accessToken, refreshToken);
   }
 
-  async endSession(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  async endSession(
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<void> {
     const raw = this.readRefreshCookie(request);
     if (raw) {
       const tokenHash = hashToken(raw);
@@ -84,16 +87,19 @@ export class SessionService {
       return null;
     }
 
-    let claims: AccessClaims;
+    let userId: string;
     try {
-      const verified = await jwtVerify(access, this.secret);
-      claims = verified.payload as unknown as AccessClaims;
+      const payload = jwt.verify(access, this.secret) as jwt.JwtPayload;
+      if (typeof payload.sub !== 'string') {
+        return null;
+      }
+      userId = payload.sub;
     } catch {
       return null;
     }
 
     const user = await this.prisma.user.findUnique({
-      where: { id: claims.sub },
+      where: { id: userId },
     });
     if (!user) {
       return null;
@@ -114,18 +120,13 @@ export class SessionService {
     };
   }
 
-  private async signAccessToken(user: User, familyId: string): Promise<string> {
+  private signAccessToken(user: User, familyId: string): string {
     const expiresMinutes = this.config.env.ACCESS_TOKEN_MINUTES;
-    return new SignJWT({
-      role: user.role,
-      status: user.status,
-      familyId,
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setSubject(user.id)
-      .setIssuedAt()
-      .setExpirationTime(`${expiresMinutes}m`)
-      .sign(this.secret);
+    return jwt.sign(
+      { role: user.role, status: user.status, familyId },
+      this.secret,
+      { subject: user.id, expiresIn: `${expiresMinutes}m` },
+    );
   }
 
   private async createRefreshToken(
@@ -134,9 +135,7 @@ export class SessionService {
   ): Promise<string> {
     const raw = randomToken();
     const expiresAt = new Date();
-    expiresAt.setDate(
-      expiresAt.getDate() + this.config.env.REFRESH_TOKEN_DAYS,
-    );
+    expiresAt.setDate(expiresAt.getDate() + this.config.env.REFRESH_TOKEN_DAYS);
 
     await this.prisma.refreshToken.create({
       data: {
