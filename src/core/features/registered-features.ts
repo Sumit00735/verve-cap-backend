@@ -37,4 +37,9 @@ export const registeredFeatures = [
     dependsOn: ['admin-users'],
     permissions: ['admin.users.write'],
   }),
+  defineFeature({
+    key: 'profile',
+    dependsOn: ['auth-sessions'],
+    permissions: [],
+  }),
 ];

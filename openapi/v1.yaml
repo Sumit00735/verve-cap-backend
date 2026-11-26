@@ -41,6 +41,11 @@ paths:
   /api/v1/auth/me:
     get:
       summary: Current user
+  /api/v1/profile:
+    get:
+      summary: Current profile
+    patch:
+      summary: Update allowlisted profile fields
   /api/v1/auth/forgot-password:
     post:
       summary: Request password reset

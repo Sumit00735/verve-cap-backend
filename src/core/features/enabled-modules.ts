@@ -11,6 +11,7 @@ export const enabledModules = {
   'activity-log': true,
   notifications: true,
   'roles-access': true,
+  profile: true,
 } as const;
 
 export type ModuleKey = keyof typeof enabledModules;
