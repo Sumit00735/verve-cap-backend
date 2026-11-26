@@ -30,3 +30,9 @@ curl http://127.0.0.1:3001/ready
 - `feature/<phase>-<area>-<name>` — one feature per branch
 
 Foundation branch: `chore/p0-foundation`.
+
+## Plug-and-play modules
+
+Turn API modules on or off in **one file**: `src/core/features/enabled-modules.ts`.
+
+Keep the same keys as the frontend file `verve-cap/src/features/enabled-modules.ts`. `FEATURES_ENABLED=health,auth-sessions` in `.env` overrides the file for a deploy.

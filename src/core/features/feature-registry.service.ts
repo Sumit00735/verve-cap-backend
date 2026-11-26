@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AppConfigService } from '../config/config.service';
 import { AppException } from '../errors/app.exception';
 import type { FeatureDefinition } from './define-feature';
+import { enabledModules, type ModuleKey } from './enabled-modules';
 import { registeredFeatures } from './registered-features';
 
 @Injectable()
@@ -59,6 +60,8 @@ export class FeatureRegistryService {
     if (configured.length > 0) {
       return configured;
     }
-    return registeredFeatures.map((feature) => feature.key);
+    return (Object.keys(enabledModules) as ModuleKey[]).filter(
+      (key) => enabledModules[key],
+    );
   }
 }
