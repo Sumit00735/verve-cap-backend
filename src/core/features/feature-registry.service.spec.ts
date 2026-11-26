@@ -9,7 +9,7 @@ function configWithFeatures(keys: string[]): AppConfigService {
 }
 
 describe('FeatureRegistryService', () => {
-  it('enables all registered features when FEATURES_ENABLED is empty', () => {
+  it('uses enabled-modules.ts when FEATURES_ENABLED is empty', () => {
     const service = new FeatureRegistryService(configWithFeatures([]));
     expect(service.getEnabledFeatures().map((f) => f.key)).toEqual(['health']);
   });
