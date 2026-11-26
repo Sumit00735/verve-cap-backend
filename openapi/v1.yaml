@@ -59,4 +59,7 @@ paths:
   /api/v1/admin/activity:
     get:
       summary: Activity log
+  /api/v1/admin/emails:
+    get:
+      summary: Email delivery log
 components: {}

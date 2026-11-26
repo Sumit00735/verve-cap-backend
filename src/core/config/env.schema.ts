@@ -24,8 +24,18 @@ export const envSchema = z
       .default('dev-only-session-secret-min-32-chars'),
     ACCESS_TOKEN_MINUTES: z.coerce.number().int().min(5).max(60).default(10),
     REFRESH_TOKEN_DAYS: z.coerce.number().int().min(1).max(90).default(14),
+    MAIL_TRANSPORT: z.enum(['smtp', 'noop']).optional(),
+    MAIL_SMTP_HOST: z.string().min(1).default('127.0.0.1'),
+    MAIL_SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(1025),
+    MAIL_FROM: z.string().email().default('noreply@vervecap.local'),
   })
-  .strict();
+  .strict()
+  .transform((data) => {
+    const mailTransport =
+      data.MAIL_TRANSPORT ??
+      (data.NODE_ENV === 'test' ? ('noop' as const) : ('smtp' as const));
+    return { ...data, MAIL_TRANSPORT: mailTransport };
+  });
 
 export type Env = z.infer<typeof envSchema>;
 
@@ -41,6 +51,10 @@ const envKeys = [
   'SESSION_SECRET',
   'ACCESS_TOKEN_MINUTES',
   'REFRESH_TOKEN_DAYS',
+  'MAIL_TRANSPORT',
+  'MAIL_SMTP_HOST',
+  'MAIL_SMTP_PORT',
+  'MAIL_FROM',
 ] as const;
 
 export function pickEnv(

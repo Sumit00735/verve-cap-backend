@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PasswordService } from '../../core/auth/password.service';
 import { hashToken, randomToken } from '../../core/auth/token-hash';
+import { AppConfigService } from '../../core/config/config.service';
 import { AppException } from '../../core/errors/app.exception';
 import { PrismaService } from '../../core/prisma/prisma.service';
+import { EmailOutboxService } from '../notifications/email-outbox.service';
 
 const RESET_MINUTES = 15;
 
@@ -11,6 +13,8 @@ export class PasswordResetService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly passwords: PasswordService,
+    private readonly config: AppConfigService,
+    private readonly mail: EmailOutboxService,
   ) {}
 
   async requestReset(email: string): Promise<{ accepted: true }> {
@@ -24,6 +28,13 @@ export class PasswordResetService {
           tokenHash: hashToken(raw),
           expiresAt,
         },
+      });
+      const resetUrl = new URL('/reset-password', this.config.env.APP_ORIGIN);
+      resetUrl.searchParams.set('token', raw);
+      await this.mail.enqueue('password_reset', {
+        name: user.name,
+        email: user.email,
+        resetUrl: resetUrl.toString(),
       });
     }
     return { accepted: true };

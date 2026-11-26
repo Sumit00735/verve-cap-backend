@@ -2,6 +2,7 @@ import { UserStatus } from '@prisma/client';
 import { PasswordService } from '../../core/auth/password.service';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { ActivityLogService } from '../activity-log/activity-log.service';
+import { EmailOutboxService } from '../notifications/email-outbox.service';
 import { AuthRegistrationService } from './auth-registration.service';
 
 describe('AuthRegistrationService', () => {
@@ -19,6 +20,10 @@ describe('AuthRegistrationService', () => {
     record: jest.fn(),
   } as unknown as ActivityLogService;
 
+  const mail = {
+    enqueue: jest.fn(),
+  } as unknown as EmailOutboxService;
+
   it('returns pending after registration', async () => {
     (prisma.user.create as jest.Mock).mockResolvedValue({
       id: 'u1',
@@ -26,7 +31,12 @@ describe('AuthRegistrationService', () => {
       status: UserStatus.PENDING,
     });
 
-    const service = new AuthRegistrationService(prisma, passwords, activity);
+    const service = new AuthRegistrationService(
+      prisma,
+      passwords,
+      activity,
+      mail,
+    );
     const result = await service.register({
       name: 'Ada',
       email: 'a@b.com',

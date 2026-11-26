@@ -20,6 +20,12 @@ enum UserRole {
   ADMIN
 }
 
+enum EmailLogStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
 model User {
   id           String     @id @default(uuid())
   email        String     @unique
@@ -78,4 +84,21 @@ model ActivityLog {
 
   @@index([createdAt])
   @@index([action])
+}
+
+model EmailLog {
+  id          String          @id @default(uuid())
+  templateKey String
+  toEmail     String
+  subject     String
+  bodyText    String
+  bodyHtml    String
+  status      EmailLogStatus  @default(PENDING)
+  attempts    Int             @default(0)
+  lastError   String?
+  createdAt   DateTime        @default(now())
+  sentAt      DateTime?
+
+  @@index([status, createdAt])
+  @@index([createdAt])
 }

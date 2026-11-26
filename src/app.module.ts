@@ -11,6 +11,7 @@ import { AdminDashboardModule } from './features/admin-dashboard/admin-dashboard
 import { AdminUsersModule } from './features/admin-users/admin-users.module';
 import { AuthRegistrationModule } from './features/auth-registration/auth-registration.module';
 import { AuthSessionsModule } from './features/auth-sessions/auth-sessions.module';
+import { NotificationsModule } from './features/notifications/notifications.module';
 import { PasswordResetModule } from './features/password-reset/password-reset.module';
 
 @Module({
@@ -39,6 +40,7 @@ import { PasswordResetModule } from './features/password-reset/password-reset.mo
     PasswordResetModule,
     AdminUsersModule,
     AdminDashboardModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

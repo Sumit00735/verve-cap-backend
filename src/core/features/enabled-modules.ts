@@ -9,6 +9,7 @@ export const enabledModules = {
   'admin-users': true,
   'admin-dashboard': true,
   'activity-log': true,
+  notifications: true,
 } as const;
 
 export type ModuleKey = keyof typeof enabledModules;

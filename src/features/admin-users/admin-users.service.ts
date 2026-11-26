@@ -4,12 +4,14 @@ import { SessionUser } from '../../core/auth/auth.types';
 import { AppException } from '../../core/errors/app.exception';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { ActivityLogService } from '../activity-log/activity-log.service';
+import { EmailOutboxService } from '../notifications/email-outbox.service';
 
 @Injectable()
 export class AdminUsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly activity: ActivityLogService,
+    private readonly mail: EmailOutboxService,
   ) {}
 
   async list(params: {
@@ -100,6 +102,19 @@ export class AdminUsersService {
       targetId: userId,
       detail: `${target.status} -> ${status}`,
     });
+
+    if (status === UserStatus.ACTIVE && target.status === UserStatus.PENDING) {
+      await this.mail.enqueue('account_approved', {
+        name: updated.name,
+        email: updated.email,
+      });
+    }
+    if (status === UserStatus.REJECTED) {
+      await this.mail.enqueue('account_rejected', {
+        name: updated.name,
+        email: updated.email,
+      });
+    }
 
     return { id: updated.id, status: updated.status };
   }

@@ -28,4 +28,27 @@ export class RedisService implements OnModuleDestroy {
       return false;
     }
   }
+
+  async pushMailJob(id: string): Promise<void> {
+    try {
+      if (this.client.status === 'wait') {
+        await this.client.connect();
+      }
+      await this.client.lpush('mail:outbox', id);
+    } catch {
+      // Queue is optional; pending rows are polled from the database.
+    }
+  }
+
+  async popMailJob(): Promise<string | null> {
+    try {
+      if (this.client.status === 'wait') {
+        await this.client.connect();
+      }
+      const id = await this.client.rpop('mail:outbox');
+      return id ?? null;
+    } catch {
+      return null;
+    }
+  }
 }

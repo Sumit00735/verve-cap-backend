@@ -27,4 +27,9 @@ export const registeredFeatures = [
     dependsOn: ['admin-users'],
     permissions: ['admin.activity.read'],
   }),
+  defineFeature({
+    key: 'notifications',
+    dependsOn: ['auth-sessions'],
+    permissions: ['admin.emails.read'],
+  }),
 ];

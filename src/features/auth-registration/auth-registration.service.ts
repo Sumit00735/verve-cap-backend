@@ -4,6 +4,7 @@ import { PasswordService } from '../../core/auth/password.service';
 import { AppException } from '../../core/errors/app.exception';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { ActivityLogService } from '../activity-log/activity-log.service';
+import { EmailOutboxService } from '../notifications/email-outbox.service';
 import type { RegisterInput } from './dto/register.dto';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class AuthRegistrationService {
     private readonly prisma: PrismaService,
     private readonly passwords: PasswordService,
     private readonly activity: ActivityLogService,
+    private readonly mail: EmailOutboxService,
   ) {}
 
   async register(input: RegisterInput): Promise<{ status: 'pending' }> {
@@ -43,6 +45,11 @@ export class AuthRegistrationService {
         targetType: 'user',
         targetId: user.id,
         detail: user.email,
+      });
+
+      await this.mail.enqueue('registration_received', {
+        name: user.name,
+        email: user.email,
       });
 
       return { status: 'pending' };
