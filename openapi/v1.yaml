@@ -46,6 +46,16 @@ paths:
       summary: Current profile
     patch:
       summary: Update allowlisted profile fields
+  /api/v1/companies:
+    get:
+      summary: List or search companies
+    post:
+      summary: Create company record
+  /api/v1/companies/{id}:
+    get:
+      summary: Get company
+    patch:
+      summary: Update company
   /api/v1/auth/forgot-password:
     post:
       summary: Request password reset

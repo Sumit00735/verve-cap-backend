@@ -22,6 +22,7 @@ describe('FeatureRegistryService', () => {
       'notifications',
       'roles-access',
       'profile',
+      'companies',
     ]);
   });
 

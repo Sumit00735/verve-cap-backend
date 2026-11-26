@@ -41,6 +41,23 @@ model User {
   refreshTokens       RefreshToken[]
   passwordResetTokens PasswordResetToken[]
   activityAsActor     ActivityLog[]        @relation("ActivityActor")
+  companiesCreated    Company[]            @relation("CompaniesCreated")
+}
+
+model Company {
+  id             String   @id @default(uuid())
+  name           String
+  normalizedName String   @unique
+  cin            String?  @unique
+  isin           String?  @unique
+  symbol         String?  @unique
+  createdById    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  createdBy User? @relation("CompaniesCreated", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
 }
 
 model RefreshToken {

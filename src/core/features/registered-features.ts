@@ -42,4 +42,9 @@ export const registeredFeatures = [
     dependsOn: ['auth-sessions'],
     permissions: [],
   }),
+  defineFeature({
+    key: 'companies',
+    dependsOn: ['roles-access'],
+    permissions: [],
+  }),
 ];

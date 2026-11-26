@@ -12,6 +12,7 @@ import { AdminUsersModule } from './features/admin-users/admin-users.module';
 import { AuthRegistrationModule } from './features/auth-registration/auth-registration.module';
 import { AuthSessionsModule } from './features/auth-sessions/auth-sessions.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
+import { CompaniesModule } from './features/companies/companies.module';
 import { ProfileModule } from './features/profile/profile.module';
 import { RolesAccessModule } from './features/roles-access/roles-access.module';
 import { PasswordResetModule } from './features/password-reset/password-reset.module';
@@ -45,6 +46,7 @@ import { PasswordResetModule } from './features/password-reset/password-reset.mo
     NotificationsModule,
     RolesAccessModule,
     ProfileModule,
+    CompaniesModule,
   ],
 })
 export class AppModule {}

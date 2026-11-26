@@ -7,12 +7,13 @@ export class AdminDashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async summary() {
-    const [totalUsers, pendingUsers, activeUsers, adminUsers] =
+    const [totalUsers, pendingUsers, activeUsers, adminUsers, totalCompanies] =
       await Promise.all([
         this.prisma.user.count(),
         this.prisma.user.count({ where: { status: UserStatus.PENDING } }),
         this.prisma.user.count({ where: { status: UserStatus.ACTIVE } }),
         this.prisma.user.count({ where: { role: UserRole.ADMIN } }),
+        this.prisma.company.count(),
       ]);
 
     return {
@@ -20,6 +21,7 @@ export class AdminDashboardService {
       pendingUsers,
       activeUsers,
       adminUsers,
+      totalCompanies,
     };
   }
 }

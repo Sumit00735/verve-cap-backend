@@ -12,6 +12,7 @@ export const enabledModules = {
   notifications: true,
   'roles-access': true,
   profile: true,
+  companies: true,
 } as const;
 
 export type ModuleKey = keyof typeof enabledModules;
