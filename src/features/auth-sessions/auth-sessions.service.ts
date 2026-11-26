@@ -23,12 +23,23 @@ export class AuthSessionsService {
     });
 
     if (!user) {
-      throw new AppException('invalid_credentials', 'Invalid email or password', 401);
+      throw new AppException(
+        'invalid_credentials',
+        'Invalid email or password',
+        401,
+      );
     }
 
-    const valid = await this.passwords.verify(input.password, user.passwordHash);
+    const valid = await this.passwords.verify(
+      input.password,
+      user.passwordHash,
+    );
     if (!valid) {
-      throw new AppException('invalid_credentials', 'Invalid email or password', 401);
+      throw new AppException(
+        'invalid_credentials',
+        'Invalid email or password',
+        401,
+      );
     }
 
     this.sessions.assertCanAuthenticate(user.status);
@@ -37,12 +48,18 @@ export class AuthSessionsService {
     return { user: this.sessions.toSessionUser(user) };
   }
 
-  async logout(request: FastifyRequest, reply: FastifyReply): Promise<{ ok: true }> {
+  async logout(
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<{ ok: true }> {
     await this.sessions.endSession(request, reply);
     return { ok: true };
   }
 
-  async refresh(request: FastifyRequest, reply: FastifyReply): Promise<{ ok: true }> {
+  async refresh(
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<{ ok: true }> {
     await this.sessions.refreshSession(request, reply);
     return { ok: true };
   }

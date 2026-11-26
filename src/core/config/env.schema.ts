@@ -43,7 +43,9 @@ const envKeys = [
   'REFRESH_TOKEN_DAYS',
 ] as const;
 
-export function pickEnv(source: NodeJS.ProcessEnv): Record<string, string | undefined> {
+export function pickEnv(
+  source: NodeJS.ProcessEnv,
+): Record<string, string | undefined> {
   return Object.fromEntries(envKeys.map((key) => [key, source[key]]));
 }
 

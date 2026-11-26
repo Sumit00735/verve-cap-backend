@@ -62,7 +62,7 @@ export class ActivityLogService {
 
     return {
       items,
-      nextCursor: hasMore ? items[items.length - 1]?.id ?? null : null,
+      nextCursor: hasMore ? (items[items.length - 1]?.id ?? null) : null,
     };
   }
 }

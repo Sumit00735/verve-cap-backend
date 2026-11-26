@@ -5,6 +5,8 @@ export type FeatureDefinition = {
   publishes?: string[];
 };
 
-export function defineFeature(definition: FeatureDefinition): FeatureDefinition {
+export function defineFeature(
+  definition: FeatureDefinition,
+): FeatureDefinition {
   return definition;
 }

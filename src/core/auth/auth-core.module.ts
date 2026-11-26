@@ -7,7 +7,19 @@ import { SessionService } from './session.service';
 
 @Global()
 @Module({
-  providers: [PasswordService, SessionService, AuthGuard, ActiveGuard, AdminGuard],
-  exports: [PasswordService, SessionService, AuthGuard, ActiveGuard, AdminGuard],
+  providers: [
+    PasswordService,
+    SessionService,
+    AuthGuard,
+    ActiveGuard,
+    AdminGuard,
+  ],
+  exports: [
+    PasswordService,
+    SessionService,
+    AuthGuard,
+    ActiveGuard,
+    AdminGuard,
+  ],
 })
 export class AuthCoreModule {}
