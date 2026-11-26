@@ -18,6 +18,12 @@ export const envSchema = z
       .enum(['true', 'false'])
       .default('false')
       .transform((v) => v === 'true'),
+    SESSION_SECRET: z
+      .string()
+      .min(32)
+      .default('dev-only-session-secret-min-32-chars'),
+    ACCESS_TOKEN_MINUTES: z.coerce.number().int().min(5).max(60).default(10),
+    REFRESH_TOKEN_DAYS: z.coerce.number().int().min(1).max(90).default(14),
   })
   .strict();
 
@@ -32,6 +38,9 @@ const envKeys = [
   'SENTRY_DSN',
   'FEATURES_ENABLED',
   'COOKIE_SECURE',
+  'SESSION_SECRET',
+  'ACCESS_TOKEN_MINUTES',
+  'REFRESH_TOKEN_DAYS',
 ] as const;
 
 export function pickEnv(source: NodeJS.ProcessEnv): Record<string, string | undefined> {

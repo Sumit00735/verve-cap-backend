@@ -1,15 +1,23 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
+import { AuthCoreModule } from './core/auth/auth-core.module';
 import { AppConfigModule } from './core/config/config.module';
 import { FeatureRegistryModule } from './core/features/feature-registry.module';
 import { HealthModule } from './core/health/health.module';
 import { PrismaModule } from './core/prisma/prisma.module';
 import { RedisModule } from './core/redis/redis.module';
+import { ActivityLogModule } from './features/activity-log/activity-log.module';
+import { AdminDashboardModule } from './features/admin-dashboard/admin-dashboard.module';
+import { AdminUsersModule } from './features/admin-users/admin-users.module';
+import { AuthRegistrationModule } from './features/auth-registration/auth-registration.module';
+import { AuthSessionsModule } from './features/auth-sessions/auth-sessions.module';
+import { PasswordResetModule } from './features/password-reset/password-reset.module';
 
 @Module({
   imports: [
     AppConfigModule,
     FeatureRegistryModule,
+    AuthCoreModule,
     LoggerModule.forRoot({
       pinoHttp: {
         redact: [
@@ -25,6 +33,12 @@ import { RedisModule } from './core/redis/redis.module';
     PrismaModule,
     RedisModule,
     HealthModule,
+    ActivityLogModule,
+    AuthRegistrationModule,
+    AuthSessionsModule,
+    PasswordResetModule,
+    AdminUsersModule,
+    AdminDashboardModule,
   ],
 })
 export class AppModule {}

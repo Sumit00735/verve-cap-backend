@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import cookie from '@fastify/cookie';
 import helmet from '@fastify/helmet';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Logger } from 'nestjs-pino';
@@ -14,6 +15,8 @@ export async function configureNestApp(
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const fastify = app.getHttpAdapter().getInstance();
+  await fastify.register(cookie);
+
   fastify.addHook('onRequest', (request, reply, done) => {
     const incoming = request.headers['x-request-id'];
     const requestId =

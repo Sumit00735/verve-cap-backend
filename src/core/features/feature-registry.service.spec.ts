@@ -11,7 +11,15 @@ function configWithFeatures(keys: string[]): AppConfigService {
 describe('FeatureRegistryService', () => {
   it('enables all registered features when FEATURES_ENABLED is empty', () => {
     const service = new FeatureRegistryService(configWithFeatures([]));
-    expect(service.getEnabledFeatures().map((f) => f.key)).toEqual(['health']);
+    expect(service.getEnabledFeatures().map((f) => f.key)).toEqual([
+      'health',
+      'auth-registration',
+      'auth-sessions',
+      'password-reset',
+      'admin-users',
+      'admin-dashboard',
+      'activity-log',
+    ]);
   });
 
   it('rejects unknown feature keys', () => {
