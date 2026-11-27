@@ -16,7 +16,7 @@ services:
       - '127.0.0.1:6379:6379'
 
   minio:
-    image: minio/minio:latest
+    image: pgsty/silo:RELEASE.2026-10-26T00-00-00Z
     command: server /data --console-address ":9001"
     ports:
       - '127.0.0.1:9000:9000'
