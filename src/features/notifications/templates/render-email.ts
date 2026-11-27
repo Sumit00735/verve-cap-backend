@@ -1,3 +1,4 @@
+import { BRAND_NAME } from '../../../core/brand';
 import type { EmailTemplateKey } from './template-keys';
 
 export type EmailTemplateContext = {
@@ -16,17 +17,19 @@ export function renderEmail(
   templateKey: EmailTemplateKey,
   context: EmailTemplateContext,
 ): RenderedEmail {
+  const signoff = `— ${BRAND_NAME}`;
+
   switch (templateKey) {
     case 'registration_received':
       return {
-        subject: 'We received your Verve Cap registration',
+        subject: `We received your ${BRAND_NAME} registration`,
         text: [
           `Hello ${context.name},`,
           '',
           'Thanks for registering. An administrator will review your account shortly.',
           'You will receive another email when your account is approved or declined.',
           '',
-          '— Verve Cap',
+          signoff,
         ].join('\n'),
         html: paragraphEmail(
           `Hello ${escapeHtml(context.name)},`,
@@ -36,13 +39,13 @@ export function renderEmail(
       };
     case 'account_approved':
       return {
-        subject: 'Your Verve Cap account is approved',
+        subject: `Your ${BRAND_NAME} account is approved`,
         text: [
           `Hello ${context.name},`,
           '',
           'Your account has been approved. You can sign in at any time.',
           '',
-          '— Verve Cap',
+          signoff,
         ].join('\n'),
         html: paragraphEmail(
           `Hello ${escapeHtml(context.name)},`,
@@ -51,14 +54,14 @@ export function renderEmail(
       };
     case 'account_rejected':
       return {
-        subject: 'Update on your Verve Cap registration',
+        subject: `Update on your ${BRAND_NAME} registration`,
         text: [
           `Hello ${context.name},`,
           '',
           'Your registration was not approved at this time.',
           'If you believe this is a mistake, contact your administrator.',
           '',
-          '— Verve Cap',
+          signoff,
         ].join('\n'),
         html: paragraphEmail(
           `Hello ${escapeHtml(context.name)},`,
@@ -71,7 +74,7 @@ export function renderEmail(
         throw new Error('password_reset requires resetUrl');
       }
       return {
-        subject: 'Reset your Verve Cap password',
+        subject: `Reset your ${BRAND_NAME} password`,
         text: [
           `Hello ${context.name},`,
           '',
@@ -80,7 +83,7 @@ export function renderEmail(
           '',
           'If you did not request this, you can ignore this email.',
           '',
-          '— Verve Cap',
+          signoff,
         ].join('\n'),
         html: paragraphEmail(
           `Hello ${escapeHtml(context.name)},`,

@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Verve Cap API
+  title: DealDesk API
   version: 1.0.0-beta
   description: Phase 1 auth and admin modules.
 paths:

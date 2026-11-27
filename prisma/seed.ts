@@ -1,10 +1,11 @@
 import { PrismaClient, UserRole, UserStatus } from '@prisma/client';
 import * as argon2 from 'argon2';
+import { BRAND_ADMIN_EMAIL, BRAND_NAME } from '../src/core/brand';
 
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
-  const email = 'admin@vervecap.local';
+  const email = BRAND_ADMIN_EMAIL;
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     process.stdout.write(`Seed: admin already exists (${email})\n`);
@@ -19,7 +20,7 @@ async function main(): Promise<void> {
     data: {
       email,
       name: 'Platform Admin',
-      company: 'Verve Cap',
+      company: BRAND_NAME,
       contact: '+91 00000 00000',
       passwordHash,
       status: UserStatus.ACTIVE,

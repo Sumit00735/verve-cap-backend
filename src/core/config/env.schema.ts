@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { BRAND_MAIL_FROM } from '../brand';
 
 const nodeEnvSchema = z.enum(['development', 'test', 'production']);
 
@@ -10,7 +11,9 @@ export const envSchema = z
     DATABASE_URL: z
       .string()
       .min(1)
-      .default('postgresql://verve:verve@127.0.0.1:5432/verve?schema=public'),
+      .default(
+        'postgresql://dealdesk:dealdesk@127.0.0.1:5432/dealdesk?schema=public',
+      ),
     REDIS_URL: z.string().min(1).default('redis://127.0.0.1:6379'),
     SENTRY_DSN: z.string().url().optional(),
     FEATURES_ENABLED: z.string().optional(),
@@ -27,7 +30,7 @@ export const envSchema = z
     MAIL_TRANSPORT: z.enum(['smtp', 'noop']).optional(),
     MAIL_SMTP_HOST: z.string().min(1).default('127.0.0.1'),
     MAIL_SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(1025),
-    MAIL_FROM: z.string().email().default('noreply@vervecap.local'),
+    MAIL_FROM: z.string().email().default(BRAND_MAIL_FROM),
   })
   .strict()
   .transform((data) => {

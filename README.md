@@ -1,4 +1,4 @@
-# Verve Cap API
+# DealDesk API
 
 NestJS (Fastify) backend for the due-diligence and deal-room platform. Program docs live in the separate `pr` workspace.
 

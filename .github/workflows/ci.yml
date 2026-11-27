@@ -13,9 +13,9 @@ jobs:
       postgres:
         image: pgvector/pgvector:pg16
         env:
-          POSTGRES_USER: verve
-          POSTGRES_PASSWORD: verve
-          POSTGRES_DB: verve
+          POSTGRES_USER: dealdesk
+          POSTGRES_PASSWORD: dealdesk
+          POSTGRES_DB: dealdesk
         ports:
           - 5432:5432
       redis:
@@ -23,7 +23,7 @@ jobs:
         ports:
           - 6379:6379
     env:
-      DATABASE_URL: postgresql://verve:verve@127.0.0.1:5432/verve?schema=public
+      DATABASE_URL: postgresql://dealdesk:dealdesk@127.0.0.1:5432/dealdesk?schema=public
       REDIS_URL: redis://127.0.0.1:6379
     steps:
       - uses: actions/checkout@v4

@@ -4,11 +4,11 @@ services:
     ports:
       - '127.0.0.1:5432:5432'
     environment:
-      POSTGRES_USER: verve
-      POSTGRES_PASSWORD: verve
-      POSTGRES_DB: verve
+      POSTGRES_USER: dealdesk
+      POSTGRES_PASSWORD: dealdesk
+      POSTGRES_DB: dealdesk
     volumes:
-      - verve_pg:/var/lib/postgresql/data
+      - dealdesk_pg:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
@@ -22,10 +22,10 @@ services:
       - '127.0.0.1:9000:9000'
       - '127.0.0.1:9001:9001'
     environment:
-      MINIO_ROOT_USER: verve
-      MINIO_ROOT_PASSWORD: verveverve
+      MINIO_ROOT_USER: dealdesk
+      MINIO_ROOT_PASSWORD: dealdeskdesk
     volumes:
-      - verve_minio:/data
+      - dealdesk_minio:/data
 
   mailpit:
     image: axllent/mailpit:latest
@@ -34,5 +34,5 @@ services:
       - '127.0.0.1:1025:1025'
 
 volumes:
-  verve_pg:
-  verve_minio:
+  dealdesk_pg:
+  dealdesk_minio:
