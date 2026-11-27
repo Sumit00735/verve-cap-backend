@@ -7,6 +7,7 @@ async function main(): Promise<void> {
   const email = 'admin@vervecap.local';
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
+    process.stdout.write(`Seed: admin already exists (${email})\n`);
     return;
   }
 
@@ -25,6 +26,7 @@ async function main(): Promise<void> {
       role: UserRole.ADMIN,
     },
   });
+  process.stdout.write(`Seed: created admin ${email}\n`);
 }
 
 main()
