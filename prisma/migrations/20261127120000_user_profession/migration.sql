@@ -1,0 +1,12 @@
+CREATE TYPE "UserProfession" AS ENUM (
+  'CA',
+  'CS',
+  'LAWYER',
+  'COMPANY_REPRESENTATIVE',
+  'INVESTMENT_BANKER',
+  'REVIEWER',
+  'INVESTOR',
+  'OTHER'
+);
+
+ALTER TABLE "User" ADD COLUMN "profession" "UserProfession" NOT NULL DEFAULT 'OTHER';

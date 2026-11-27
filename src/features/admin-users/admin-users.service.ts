@@ -52,6 +52,7 @@ export class AdminUsersService {
         contact: true,
         status: true,
         role: true,
+        profession: true,
         createdAt: true,
         updatedAt: true,
       },

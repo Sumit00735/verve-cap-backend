@@ -10,6 +10,7 @@ import { ActivityLogService } from '../activity-log/activity-log.service';
 import { EmailOutboxService } from '../notifications/email-outbox.service';
 import type { RegisterInput } from './dto/register.dto';
 import type { SendVerificationInput } from './dto/send-verification.dto';
+import type { VerifyCodeInput } from './dto/verify-code.dto';
 
 const CODE_TTL_SECONDS = 900;
 const codeKey = (email: string) =>
@@ -38,6 +39,12 @@ export class AuthRegistrationService {
     return { sent: true };
   }
 
+  async verifyCode(input: VerifyCodeInput): Promise<{ verified: true }> {
+    const email = input.email.trim().toLowerCase();
+    await this.assertVerificationCode(email, input.verificationCode);
+    return { verified: true };
+  }
+
   async register(input: RegisterInput): Promise<{ status: 'pending' }> {
     const email = input.email.trim().toLowerCase();
     await this.assertVerificationCode(email, input.verificationCode);
@@ -62,6 +69,7 @@ export class AuthRegistrationService {
           contact: input.contact,
           passwordHash,
           role: UserRole.USER,
+          profession: input.profession,
         },
       });
 

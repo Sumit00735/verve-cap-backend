@@ -20,6 +20,17 @@ enum UserRole {
   ADMIN
 }
 
+enum UserProfession {
+  CA
+  CS
+  LAWYER
+  COMPANY_REPRESENTATIVE
+  INVESTMENT_BANKER
+  REVIEWER
+  INVESTOR
+  OTHER
+}
+
 enum EmailLogStatus {
   PENDING
   SENT
@@ -34,8 +45,9 @@ model User {
   contact      String
   passwordHash String
   status       UserStatus @default(PENDING)
-  role         UserRole   @default(USER)
-  createdAt    DateTime   @default(now())
+  role         UserRole        @default(USER)
+  profession   UserProfession  @default(OTHER)
+  createdAt    DateTime        @default(now())
   updatedAt    DateTime   @updatedAt
 
   refreshTokens       RefreshToken[]

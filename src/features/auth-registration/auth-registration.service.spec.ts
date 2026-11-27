@@ -56,10 +56,10 @@ describe('AuthRegistrationService', () => {
       name: 'Ada',
       email: 'a@b.com',
       company: 'Acme',
-      contact: '+91 90000 00000',
+      contact: '9000000000',
       password: 'LongEnough-Pass1',
       verificationCode: '123456',
-      role: 'USER',
+      profession: 'CA',
     });
 
     expect(result).toEqual({ status: 'pending' });

@@ -4,6 +4,7 @@ import { AppException } from '../../core/errors/app.exception';
 import { AuthRegistrationService } from './auth-registration.service';
 import { registerSchema } from './dto/register.dto';
 import { sendVerificationSchema } from './dto/send-verification.dto';
+import { verifyCodeSchema } from './dto/verify-code.dto';
 
 @Feature('auth-registration')
 @Controller('auth')
@@ -17,6 +18,15 @@ export class AuthRegistrationController {
       throw new AppException('bad_request', 'Invalid email', 400);
     }
     return this.registration.sendVerification(parsed.data);
+  }
+
+  @Post('register/verify-code')
+  async verifyCode(@Body() body: unknown) {
+    const parsed = verifyCodeSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new AppException('bad_request', 'Invalid verification code', 400);
+    }
+    return this.registration.verifyCode(parsed.data);
   }
 
   @Post('register')
