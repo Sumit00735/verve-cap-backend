@@ -6,7 +6,6 @@ export const registerSchema = z
   .object({
     name: z.string().trim().min(1).max(120),
     email: z.string().trim().toLowerCase().email().max(254),
-    company: z.string().trim().min(1).max(200),
     contact: z.string().trim().regex(/^\d{5,15}$/, 'Enter 5–15 digits only'),
     profession: z.nativeEnum(UserProfession),
     password: z

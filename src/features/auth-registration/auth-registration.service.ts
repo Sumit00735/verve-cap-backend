@@ -65,7 +65,7 @@ export class AuthRegistrationService {
         data: {
           name: input.name,
           email,
-          company: input.company,
+          company: '',
           contact: input.contact,
           passwordHash,
           role: UserRole.USER,

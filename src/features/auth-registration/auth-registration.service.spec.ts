@@ -55,7 +55,6 @@ describe('AuthRegistrationService', () => {
     const result = await service.register({
       name: 'Ada',
       email: 'a@b.com',
-      company: 'Acme',
       contact: '9000000000',
       password: 'LongEnough-Pass1',
       verificationCode: '123456',
