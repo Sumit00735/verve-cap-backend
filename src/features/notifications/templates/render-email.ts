@@ -5,6 +5,7 @@ export type EmailTemplateContext = {
   name: string;
   email: string;
   resetUrl?: string;
+  verificationCode?: string;
 };
 
 export type RenderedEmail = {
@@ -20,6 +21,29 @@ export function renderEmail(
   const signoff = `— ${BRAND_NAME}`;
 
   switch (templateKey) {
+    case 'registration_verify_code': {
+      const code = context.verificationCode;
+      if (!code) {
+        throw new Error('registration_verify_code requires verificationCode');
+      }
+      return {
+        subject: `Verify your email for ${BRAND_NAME}`,
+        text: [
+          `Hello ${context.name},`,
+          '',
+          `Your verification code is ${code}. It expires in 15 minutes.`,
+          '',
+          'If you did not request this, you can ignore this email.',
+          '',
+          signoff,
+        ].join('\n'),
+        html: paragraphEmail(
+          `Hello ${escapeHtml(context.name)},`,
+          `Your verification code is <strong>${escapeHtml(code)}</strong>. It expires in 15 minutes.`,
+          'If you did not request this, you can ignore this email.',
+        ),
+      };
+    }
     case 'registration_received':
       return {
         subject: `We received your ${BRAND_NAME} registration`,

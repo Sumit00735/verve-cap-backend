@@ -1,4 +1,5 @@
 export const emailTemplateKeys = [
+  'registration_verify_code',
   'registration_received',
   'account_approved',
   'account_rejected',

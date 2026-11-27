@@ -31,6 +31,10 @@ export const envSchema = z
     MAIL_SMTP_HOST: z.string().min(1).default('127.0.0.1'),
     MAIL_SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(1025),
     MAIL_FROM: z.string().email().default(BRAND_MAIL_FROM),
+    REGISTRATION_VERIFY_TEST_CODE: z
+      .string()
+      .regex(/^\d{6}$/)
+      .optional(),
   })
   .strict()
   .transform((data) => {
@@ -58,6 +62,7 @@ const envKeys = [
   'MAIL_SMTP_HOST',
   'MAIL_SMTP_PORT',
   'MAIL_FROM',
+  'REGISTRATION_VERIFY_TEST_CODE',
 ] as const;
 
 export function pickEnv(
@@ -77,6 +82,14 @@ export function parseEnv(source: NodeJS.ProcessEnv = process.env): Env {
   if (parsed.data.NODE_ENV === 'production' && !parsed.data.COOKIE_SECURE) {
     throw new Error(
       'Invalid configuration: COOKIE_SECURE must be true in production',
+    );
+  }
+  if (
+    parsed.data.NODE_ENV === 'production' &&
+    parsed.data.REGISTRATION_VERIFY_TEST_CODE
+  ) {
+    throw new Error(
+      'Invalid configuration: REGISTRATION_VERIFY_TEST_CODE is not allowed in production',
     );
   }
   return parsed.data;

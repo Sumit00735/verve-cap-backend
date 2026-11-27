@@ -7,7 +7,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UserStatus } from '@prisma/client';
+import { UserRole, UserStatus } from '@prisma/client';
 import { z } from 'zod';
 import { AdminGuard } from '../../core/auth/admin.guard';
 import { AuthGuard } from '../../core/auth/auth.guard';
@@ -22,6 +22,7 @@ const listSchema = z
     limit: z.coerce.number().int().min(1).max(100).default(20),
     cursor: z.string().uuid().optional(),
     status: z.nativeEnum(UserStatus).optional(),
+    role: z.nativeEnum(UserRole).optional(),
     q: z.string().max(120).optional(),
   })
   .strict();
@@ -48,6 +49,7 @@ export class AdminUsersController {
       limit: parsed.data.limit,
       cursor: parsed.data.cursor,
       status: parsed.data.status,
+      role: parsed.data.role,
       query: parsed.data.q,
     });
   }

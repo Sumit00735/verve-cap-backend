@@ -18,11 +18,15 @@ export class AdminUsersService {
     limit: number;
     cursor?: string;
     status?: UserStatus;
+    role?: UserRole;
     query?: string;
   }) {
     const where: Prisma.UserWhereInput = {};
     if (params.status) {
       where.status = params.status;
+    }
+    if (params.role) {
+      where.role = params.role;
     }
     if (params.query?.trim()) {
       const q = params.query.trim();

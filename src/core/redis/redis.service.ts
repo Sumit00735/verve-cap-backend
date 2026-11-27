@@ -40,6 +40,31 @@ export class RedisService implements OnModuleDestroy {
     }
   }
 
+  async setWithExpiry(
+    key: string,
+    value: string,
+    ttlSeconds: number,
+  ): Promise<void> {
+    if (this.client.status === 'wait') {
+      await this.client.connect();
+    }
+    await this.client.set(key, value, 'EX', ttlSeconds);
+  }
+
+  async get(key: string): Promise<string | null> {
+    if (this.client.status === 'wait') {
+      await this.client.connect();
+    }
+    return this.client.get(key);
+  }
+
+  async del(key: string): Promise<void> {
+    if (this.client.status === 'wait') {
+      await this.client.connect();
+    }
+    await this.client.del(key);
+  }
+
   async popMailJob(): Promise<string | null> {
     try {
       if (this.client.status === 'wait') {

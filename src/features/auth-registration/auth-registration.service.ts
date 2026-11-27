@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
+import { randomInt } from 'node:crypto';
 import { PasswordService } from '../../core/auth/password.service';
+import { AppConfigService } from '../../core/config/config.service';
 import { AppException } from '../../core/errors/app.exception';
 import { PrismaService } from '../../core/prisma/prisma.service';
+import { RedisService } from '../../core/redis/redis.service';
 import { ActivityLogService } from '../activity-log/activity-log.service';
 import { EmailOutboxService } from '../notifications/email-outbox.service';
 import type { RegisterInput } from './dto/register.dto';
+import type { SendVerificationInput } from './dto/send-verification.dto';
+
+const CODE_TTL_SECONDS = 900;
+const codeKey = (email: string) =>
+  `registration:verify:${email.trim().toLowerCase()}`;
 
 @Injectable()
 export class AuthRegistrationService {
@@ -14,9 +22,26 @@ export class AuthRegistrationService {
     private readonly passwords: PasswordService,
     private readonly activity: ActivityLogService,
     private readonly mail: EmailOutboxService,
+    private readonly redis: RedisService,
+    private readonly config: AppConfigService,
   ) {}
 
+  async sendVerification(input: SendVerificationInput): Promise<{ sent: true }> {
+    const email = input.email.trim().toLowerCase();
+    const code = String(randomInt(0, 1_000_000)).padStart(6, '0');
+    await this.redis.setWithExpiry(codeKey(email), code, CODE_TTL_SECONDS);
+    await this.mail.enqueue('registration_verify_code', {
+      email,
+      name: email.split('@')[0] ?? 'there',
+      verificationCode: code,
+    });
+    return { sent: true };
+  }
+
   async register(input: RegisterInput): Promise<{ status: 'pending' }> {
+    const email = input.email.trim().toLowerCase();
+    await this.assertVerificationCode(email, input.verificationCode);
+
     let passwordHash: string;
     try {
       passwordHash = await this.passwords.hash(input.password);
@@ -32,12 +57,15 @@ export class AuthRegistrationService {
       const user = await this.prisma.user.create({
         data: {
           name: input.name,
-          email: input.email,
+          email,
           company: input.company,
           contact: input.contact,
           passwordHash,
+          role: UserRole.USER,
         },
       });
+
+      await this.redis.del(codeKey(email));
 
       await this.activity.record({
         actorId: user.id,
@@ -65,6 +93,25 @@ export class AuthRegistrationService {
         );
       }
       throw error;
+    }
+  }
+
+  private async assertVerificationCode(
+    email: string,
+    submitted: string,
+  ): Promise<void> {
+    const testCode = this.config.env.REGISTRATION_VERIFY_TEST_CODE;
+    if (testCode && submitted === testCode) {
+      return;
+    }
+
+    const stored = await this.redis.get(codeKey(email));
+    if (!stored || stored !== submitted) {
+      throw new AppException(
+        'invalid_verification_code',
+        'Verification code is invalid or expired',
+        400,
+      );
     }
   }
 }

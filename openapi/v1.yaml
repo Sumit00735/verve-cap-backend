@@ -18,6 +18,12 @@ paths:
           description: OK
         '503':
           description: Unavailable
+  /api/v1/auth/register/verification-code:
+    post:
+      summary: Send registration email verification code
+      responses:
+        '200':
+          description: Code queued
   /api/v1/auth/register:
     post:
       summary: Register account
