@@ -48,6 +48,8 @@
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
+    "@swc/cli": "^0.5.2",
+    "@swc/core": "^1.16.22",
     "@types/jest": "^29.5.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.3.1",
